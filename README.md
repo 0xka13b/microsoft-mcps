@@ -182,25 +182,3 @@ HTTP port: `--port <n>` → `PORT` → `3000`.
 | `PORT`                    | http    | Listen port (default `3000`).                                      |
 | `MCP_HTTP_BODY_LIMIT`     | http    | Max request body size (default `50mb`) for base64 uploads.         |
 | `MCP_DEBUG`               | both    | Any non-empty value enables debug logs (to stderr).                |
-
-## Adding a server
-
-```bash
-pnpm new-app <name>
-```
-
-Scaffolds `apps/<name>/` from the standard template (package.json, tsconfig, tsup config, and a starter `src/tools.ts` + `src/index.ts`). Then add your tools and run `pnpm install`. The template is already publish-ready.
-
-## Releasing
-
-Each server is an independent, unscoped npm package (`ms-<service>-mcp`). The shared `packages/*` are `private` — `tsup` bundles them into each server's `dist/index.js` (`noExternal: [/^@microsoft-mcp\//]`), so only `@modelcontextprotocol/sdk`, `express`, and `zod` are installed at runtime.
-
-Versioning uses [changesets](https://github.com/changesets/changesets); publishing uses `pnpm -r publish`:
-
-```bash
-pnpm changeset           # describe a change; pick affected servers + bump type
-pnpm version-packages    # apply pending changesets -> bump versions + changelogs
-pnpm release             # build all, then `pnpm -r publish` to npm
-```
-
-`pnpm -r publish` rewrites the internal `workspace:*` deps to real versions, runs `prepublishOnly` (a fresh `tsup` build) per package, and publishes only servers whose version isn't already on npm. The packages are unscoped, so they publish public by default — just `npm login` with any account first.
