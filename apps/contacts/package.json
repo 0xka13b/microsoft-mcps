@@ -1,5 +1,5 @@
 {
-  "name": "@microsoft-mcp/contacts",
+  "name": "ms-contacts-mcp",
   "version": "1.0.0",
   "type": "module",
   "description": "Microsoft Contacts MCP server.",
@@ -24,16 +24,13 @@
     "address-book"
   ],
   "bin": {
-    "microsoft-contacts-mcp": "./dist/index.js"
+    "ms-contacts-mcp": "./dist/index.js"
   },
   "files": [
     "dist"
   ],
   "engines": {
     "node": ">=20"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",

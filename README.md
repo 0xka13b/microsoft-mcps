@@ -11,13 +11,13 @@ This is a from-scratch reimplementation of an earlier set of Hono-based REST ser
 
 ## Servers
 
-| Server      | Package                      | Tools | Binary                       |
-| ----------- | ---------------------------- | ----: | ---------------------------- |
-| Calendar    | `@microsoft-mcp/calendar`    |     9 | `microsoft-calendar-mcp`     |
-| Contacts    | `@microsoft-mcp/contacts`    |     7 | `microsoft-contacts-mcp`     |
-| OneDrive    | `@microsoft-mcp/onedrive`    |     9 | `microsoft-onedrive-mcp`     |
-| Outlook     | `@microsoft-mcp/outlook`     |    14 | `microsoft-outlook-mcp`      |
-| SharePoint  | `@microsoft-mcp/sharepoint`  |    23 | `microsoft-sharepoint-mcp`   |
+| Server      | npm package (and binary)  | Tools |
+| ----------- | ------------------------- | ----: |
+| Calendar    | `ms-calendar-mcp`         |     9 |
+| Contacts    | `ms-contacts-mcp`         |     7 |
+| OneDrive    | `ms-onedrive-mcp`         |     9 |
+| Outlook     | `ms-outlook-mcp`          |    14 |
+| SharePoint  | `ms-sharepoint-mcp`       |    23 |
 
 All tools are thin wrappers over the [Microsoft Graph](https://learn.microsoft.com/graph/) `v1.0` API.
 
@@ -107,7 +107,7 @@ Each server is published to npm and runnable with `npx` — no clone or build:
   "mcpServers": {
     "microsoft-calendar": {
       "command": "npx",
-      "args": ["-y", "@microsoft-mcp/calendar"],
+      "args": ["-y", "ms-calendar-mcp"],
       "env": { "MICROSOFT_ACCESS_TOKEN": "<token>" }
     }
   }
@@ -127,7 +127,7 @@ Or point at a local build instead of npm:
 During development you can skip the build and run the TypeScript directly:
 
 ```bash
-MICROSOFT_ACCESS_TOKEN=<token> pnpm --filter @microsoft-mcp/calendar dev
+MICROSOFT_ACCESS_TOKEN=<token> pnpm --filter ms-calendar-mcp dev
 ```
 
 ### Streamable HTTP
@@ -136,7 +136,7 @@ MICROSOFT_ACCESS_TOKEN=<token> pnpm --filter @microsoft-mcp/calendar dev
 # build first, then:
 PORT=3000 node apps/calendar/dist/index.js --http
 # or, in dev:
-pnpm --filter @microsoft-mcp/calendar dev -- --http --port 3000
+pnpm --filter ms-calendar-mcp dev -- --http --port 3000
 ```
 
 The server exposes `POST /mcp` (the MCP endpoint) and `GET /healthz`. Point any Streamable-HTTP MCP client at `http://localhost:3000/mcp` with an `Authorization: Bearer` header.
@@ -166,7 +166,7 @@ Scaffolds `apps/<name>/` from the standard template (package.json, tsconfig, tsu
 
 ## Releasing
 
-Each server is an independent npm package. The shared `packages/*` are `private` — `tsup` bundles them into each server's `dist/index.js` (`noExternal: [/^@microsoft-mcp\//]`), so only `@modelcontextprotocol/sdk`, `express`, and `zod` are installed at runtime.
+Each server is an independent, unscoped npm package (`ms-<service>-mcp`). The shared `packages/*` are `private` — `tsup` bundles them into each server's `dist/index.js` (`noExternal: [/^@microsoft-mcp\//]`), so only `@modelcontextprotocol/sdk`, `express`, and `zod` are installed at runtime.
 
 Versioning and publishing use [changesets](https://github.com/changesets/changesets):
 
@@ -176,4 +176,4 @@ pnpm version-packages    # apply pending changesets -> bump versions + changelog
 pnpm release             # build all, then `changeset publish` to npm
 ```
 
-`pnpm release` runs `prepublishOnly` (a fresh `tsup` build) per package, so the published tarball always contains an up-to-date bundle. Packages publish with `--access public`. Publishing requires `npm login` (an npm account with access to the `@microsoft-mcp` scope).
+`pnpm release` runs `prepublishOnly` (a fresh `tsup` build) per package, so the published tarball always contains an up-to-date bundle. The packages are unscoped, so they publish public by default — just `npm login` with any account first.

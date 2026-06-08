@@ -1,5 +1,5 @@
 {
-  "name": "@microsoft-mcp/sharepoint",
+  "name": "ms-sharepoint-mcp",
   "version": "1.0.0",
   "type": "module",
   "description": "Microsoft SharePoint MCP server.",
@@ -25,16 +25,13 @@
     "documents"
   ],
   "bin": {
-    "microsoft-sharepoint-mcp": "./dist/index.js"
+    "ms-sharepoint-mcp": "./dist/index.js"
   },
   "files": [
     "dist"
   ],
   "engines": {
     "node": ">=20"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",

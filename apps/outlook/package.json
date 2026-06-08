@@ -1,5 +1,5 @@
 {
-  "name": "@microsoft-mcp/outlook",
+  "name": "ms-outlook-mcp",
   "version": "1.0.0",
   "type": "module",
   "description": "Microsoft Outlook (mail) MCP server.",
@@ -25,16 +25,13 @@
     "mail"
   ],
   "bin": {
-    "microsoft-outlook-mcp": "./dist/index.js"
+    "ms-outlook-mcp": "./dist/index.js"
   },
   "files": [
     "dist"
   ],
   "engines": {
     "node": ">=20"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",

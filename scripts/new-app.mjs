@@ -32,7 +32,7 @@ const serverName = `microsoft-${name}`;
 mkdirSync(path.join(appDir, "src"), { recursive: true });
 
 const packageJson = {
-  name: `@microsoft-mcp/${name}`,
+  name: `ms-${name}-mcp`,
   version: "1.0.0",
   type: "module",
   description: `Microsoft ${title} MCP server.`,
@@ -46,10 +46,9 @@ const packageJson = {
   },
   bugs: { url: "https://github.com/0xka13b/microsoft-mcps/issues" },
   keywords: ["mcp", "model-context-protocol", "microsoft", "microsoft-365", "microsoft-graph", name],
-  bin: { [`microsoft-${name}-mcp`]: "./dist/index.js" },
+  bin: { [`ms-${name}-mcp`]: "./dist/index.js" },
   files: ["dist"],
   engines: { node: ">=20" },
-  publishConfig: { access: "public" },
   scripts: {
     dev: "tsx watch src/index.ts",
     start: "node dist/index.js",

@@ -1,5 +1,5 @@
 {
-  "name": "@microsoft-mcp/calendar",
+  "name": "ms-calendar-mcp",
   "version": "1.0.0",
   "type": "module",
   "description": "Microsoft Calendar (Outlook Calendar) MCP server.",
@@ -24,16 +24,13 @@
     "outlook-calendar"
   ],
   "bin": {
-    "microsoft-calendar-mcp": "./dist/index.js"
+    "ms-calendar-mcp": "./dist/index.js"
   },
   "files": [
     "dist"
   ],
   "engines": {
     "node": ">=20"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",

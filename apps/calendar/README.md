@@ -1,4 +1,4 @@
-# @microsoft-mcp/calendar
+# ms-calendar-mcp
 
 Microsoft Calendar (Outlook Calendar) [Model Context Protocol](https://modelcontextprotocol.io) server — 9 tools over the [Microsoft Graph](https://learn.microsoft.com/graph/) `v1.0` API. Runs over **stdio** (local) or **Streamable HTTP** (remote).
 
@@ -13,7 +13,7 @@ Add to your MCP client config (e.g. Claude Desktop `claude_desktop_config.json`)
   "mcpServers": {
     "microsoft-calendar": {
       "command": "npx",
-      "args": ["-y", "@microsoft-mcp/calendar"],
+      "args": ["-y", "ms-calendar-mcp"],
       "env": { "MICROSOFT_ACCESS_TOKEN": "<microsoft-graph-token>" }
     }
   }
@@ -29,7 +29,7 @@ az account get-access-token --resource https://graph.microsoft.com --query acces
 ## Remote (Streamable HTTP)
 
 ```bash
-npx -y @microsoft-mcp/calendar --http --port 3000
+npx -y ms-calendar-mcp --http --port 3000
 ```
 
 Point a Streamable-HTTP MCP client at `http://localhost:3000/mcp` and send the token per request as `Authorization: Bearer <token>`.

@@ -1,5 +1,5 @@
 {
-  "name": "@microsoft-mcp/onedrive",
+  "name": "ms-onedrive-mcp",
   "version": "1.0.0",
   "type": "module",
   "description": "Microsoft OneDrive MCP server.",
@@ -25,16 +25,13 @@
     "storage"
   ],
   "bin": {
-    "microsoft-onedrive-mcp": "./dist/index.js"
+    "ms-onedrive-mcp": "./dist/index.js"
   },
   "files": [
     "dist"
   ],
   "engines": {
     "node": ">=20"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
