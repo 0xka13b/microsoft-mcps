@@ -1,3 +1,4 @@
+import type { Server } from "node:http";
 import express from "express";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
@@ -8,7 +9,7 @@ import type { AnyTool, ServerMeta } from "./types.js";
 /** Env var holding the access token when running over stdio. */
 export const TOKEN_ENV = "MICROSOFT_ACCESS_TOKEN";
 
-const requireToken = (token: string | undefined): string => {
+export const requireToken = (token: string | undefined): string => {
   if (!token) {
     throw Object.assign(
       new Error(
@@ -20,7 +21,7 @@ const requireToken = (token: string | undefined): string => {
   return token;
 };
 
-const extractBearer = (authHeader: string | undefined): string | undefined => {
+export const extractBearer = (authHeader: string | undefined): string | undefined => {
   if (!authHeader?.startsWith("Bearer ")) return undefined;
   const token = authHeader.slice("Bearer ".length).trim();
   return token || undefined;
@@ -40,8 +41,10 @@ export async function runStdio(meta: ServerMeta, tools: AnyTool[]): Promise<void
  * Runs the server over Streamable HTTP (stateless). Each POST /mcp gets a fresh
  * server + transport with the request's bearer token, so distinct callers'
  * tokens never mix. GET/DELETE are unsupported in stateless mode.
+ *
+ * Resolves with the listening {@link Server} so callers (and tests) can close it.
  */
-export async function runHttp(meta: ServerMeta, tools: AnyTool[], port: number): Promise<void> {
+export async function runHttp(meta: ServerMeta, tools: AnyTool[], port: number): Promise<Server> {
   const app = express();
   app.use(express.json({ limit: process.env.MCP_HTTP_BODY_LIMIT ?? "50mb" }));
 
@@ -89,10 +92,10 @@ export async function runHttp(meta: ServerMeta, tools: AnyTool[], port: number):
   app.get("/mcp", methodNotAllowed);
   app.delete("/mcp", methodNotAllowed);
 
-  await new Promise<void>((resolve) => {
-    app.listen(port, () => {
+  return await new Promise<Server>((resolve) => {
+    const server = app.listen(port, () => {
       log.info("MCP server started", { server: meta.name, transport: "http", port });
-      resolve();
+      resolve(server);
     });
   });
 }

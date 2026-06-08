@@ -1,23 +1,38 @@
-# Microsoft MCP
+<div align="center">
 
-Microsoft 365 [Model Context Protocol](https://modelcontextprotocol.io) servers — **Calendar, Contacts, OneDrive, Outlook, and SharePoint** — built on the official [`@modelcontextprotocol/sdk`](https://www.npmjs.com/package/@modelcontextprotocol/sdk).
+<img src=".github/assets/icons/outlook.svg" width="54" alt="Outlook" />&nbsp;&nbsp;<img src=".github/assets/icons/calendar.svg" width="54" alt="Calendar" />&nbsp;&nbsp;<img src=".github/assets/icons/onedrive.svg" width="54" alt="OneDrive" />&nbsp;&nbsp;<img src=".github/assets/icons/sharepoint.svg" width="54" alt="SharePoint" />&nbsp;&nbsp;<img src=".github/assets/icons/contacts.svg" width="54" alt="Contacts" />
+
+<h1>Microsoft MCP</h1>
+
+<p>
+  <b>Model Context Protocol servers for Microsoft 365.</b><br/>
+  Calendar · Contacts · OneDrive · Outlook · SharePoint — on the official
+  <a href="https://www.npmjs.com/package/@modelcontextprotocol/sdk"><code>@modelcontextprotocol/sdk</code></a>,
+  over stdio or Streamable HTTP.
+</p>
+
+[![CI](https://github.com/0xka13b/microsoft-mcps/actions/workflows/ci.yml/badge.svg)](https://github.com/0xka13b/microsoft-mcps/actions/workflows/ci.yml)
+[![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/0xka13b/microsoft-mcps/master/.github/badges/coverage.json)](https://github.com/0xka13b/microsoft-mcps/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![node](https://img.shields.io/badge/node-%E2%89%A520-339933?logo=nodedotjs&logoColor=white)
+![MCP SDK](https://img.shields.io/badge/MCP%20SDK-1.x-6E56CF)
+
+</div>
 
 Each server speaks the real MCP protocol and runs over **either transport**:
 
 - **stdio** — for local MCP clients that launch the server as a subprocess (Claude Desktop, IDEs, the MCP Inspector).
 - **Streamable HTTP** — for remote/hosted use, with the Microsoft Graph access token supplied per request via `Authorization: Bearer`.
 
-This is a from-scratch reimplementation of an earlier set of Hono-based REST services. Every tool's behavior (schemas, Graph endpoints, edge cases) is preserved; only the framing is now standard MCP.
-
 ## Servers
 
-| Server      | npm package (and binary)  | Tools |
-| ----------- | ------------------------- | ----: |
-| Calendar    | `ms-calendar-mcp`         |     9 |
-| Contacts    | `ms-contacts-mcp`         |     7 |
-| OneDrive    | `ms-onedrive-mcp`         |     9 |
-| Outlook     | `ms-outlook-mcp`          |    14 |
-| SharePoint  | `ms-sharepoint-mcp`       |    23 |
+| | Server      | npm package (and binary)  | Tools |
+| :-: | ----------- | ------------------------- | ----: |
+| <img src=".github/assets/icons/calendar.svg" width="22" alt=""/>   | Calendar    | `ms-calendar-mcp`         |     9 |
+| <img src=".github/assets/icons/contacts.svg" width="22" alt=""/>   | Contacts    | `ms-contacts-mcp`         |     7 |
+| <img src=".github/assets/icons/onedrive.svg" width="22" alt=""/>   | OneDrive    | `ms-onedrive-mcp`         |     9 |
+| <img src=".github/assets/icons/outlook.svg" width="22" alt=""/>    | Outlook     | `ms-outlook-mcp`          |    14 |
+| <img src=".github/assets/icons/sharepoint.svg" width="22" alt=""/> | SharePoint  | `ms-sharepoint-mcp`       |    23 |
 
 All tools are thin wrappers over the [Microsoft Graph](https://learn.microsoft.com/graph/) `v1.0` API.
 
@@ -79,6 +94,18 @@ pnpm install
 pnpm build        # build all servers (turbo) -> apps/*/dist/index.js
 pnpm check-types  # typecheck everything
 ```
+
+## Tests & CI
+
+```bash
+pnpm test            # run the vitest suite once
+pnpm test:watch      # watch mode
+pnpm test:coverage   # run with a v8 coverage report (-> coverage/)
+```
+
+Tests live next to the code as `*.test.ts` and run on TypeScript source directly (no build step). The shared `packages/*` are covered by unit and integration tests — including a full Streamable-HTTP round-trip against a live server — and CI enforces a coverage floor on them. Each `apps/*` server ships an invariant suite that locks its tool surface (unique snake_case names, valid schemas and confirmation policies).
+
+Every push and pull request to `master` runs [CI](.github/workflows/ci.yml): typecheck → build → tests with coverage. The coverage badge is regenerated from the run.
 
 ## Authentication
 

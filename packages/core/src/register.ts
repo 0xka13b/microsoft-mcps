@@ -18,10 +18,12 @@ const errorResult = (message: string, status: number): CallToolResult => ({
 
 /**
  * Maps an error thrown by a tool handler (or the Graph client) onto an MCP
- * error result, preserving the status-specific messaging the original Hono
- * servers produced (auth, rate limit, client vs. server errors).
+ * error result with status-specific messaging (auth, rate limit, client vs.
+ * server errors).
+ *
+ * Exported for unit testing.
  */
-const mapError = (toolName: string, err: any, durationMs: number): CallToolResult => {
+export const mapError = (toolName: string, err: any, durationMs: number): CallToolResult => {
   const status: number = err?.status ?? err?.code ?? 500;
   const message: string = err?.message ?? "Tool execution failed";
 

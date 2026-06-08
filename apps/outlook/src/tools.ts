@@ -3,8 +3,8 @@ import { defineTool } from "@microsoft-mcp/core";
 import { GraphError } from "@microsoft-mcp/graph";
 import { escapeKql, httpError, validateId } from "@microsoft-mcp/validation";
 
-// Replicates the original behavior: a 404 from a message endpoint surfaces a
-// friendlier "Email not found" message instead of the raw Graph error.
+// A 404 from a message endpoint surfaces a friendlier "Email not found"
+// message instead of the raw Graph error.
 const emailReq = async <T>(p: Promise<T>): Promise<T> => {
   try {
     return await p;

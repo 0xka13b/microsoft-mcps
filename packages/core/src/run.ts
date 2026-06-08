@@ -10,7 +10,7 @@ export type TransportMode = "stdio" | "http";
  *   2. env `MCP_TRANSPORT=stdio|http`
  *   3. default `stdio` (the convention for MCP clients launching a subprocess)
  */
-const resolveMode = (argv: string[]): TransportMode => {
+export const resolveMode = (argv: string[]): TransportMode => {
   if (argv.includes("--http")) return "http";
   if (argv.includes("--stdio")) return "stdio";
   const env = (process.env.MCP_TRANSPORT ?? "").toLowerCase();
@@ -22,7 +22,7 @@ const resolveMode = (argv: string[]): TransportMode => {
  * Resolves the HTTP port. Precedence: `--port <n>` / `--port=<n>`, then `PORT`,
  * then 3000.
  */
-const resolvePort = (argv: string[]): number => {
+export const resolvePort = (argv: string[]): number => {
   const eq = argv.find((a) => a.startsWith("--port="));
   if (eq) return Number(eq.slice("--port=".length));
   const idx = argv.indexOf("--port");

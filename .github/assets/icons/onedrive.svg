@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="OneDrive">
+  <rect width="48" height="48" rx="11" fill="#0364B8"/>
+  <g fill="#fff">
+    <circle cx="18.5" cy="27" r="6.2"/>
+    <circle cx="27" cy="23" r="8.4"/>
+    <circle cx="32.5" cy="28" r="5.8"/>
+    <rect x="16" y="27" width="18.5" height="7.5" rx="3.75"/>
+  </g>
+</svg>

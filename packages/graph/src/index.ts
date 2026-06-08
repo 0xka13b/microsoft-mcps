@@ -3,8 +3,7 @@
  *
  * One instance is created per tool invocation (the token is request-scoped), so
  * handlers receive a ready-to-use client via the tool context and never deal
- * with tokens directly. Mirrors the `graphRequest` / `graphUpload` helpers that
- * previously lived in each server, centralized and shared.
+ * with tokens directly.
  */
 
 export const GRAPH_BASE = "https://graph.microsoft.com/v1.0";
@@ -69,7 +68,6 @@ export class GraphClient {
   /**
    * Performs a Graph request and returns the parsed JSON body (or null for
    * 204/202 responses). Throws {@link GraphError} on non-2xx responses.
-   * Mirrors the original `graphRequest(method, path, token, body?, params?)`.
    */
   async request<T = any>(
     method: string,
@@ -85,7 +83,7 @@ export class GraphClient {
 
   /**
    * Uploads binary content (PUT/POST) with an explicit content type and returns
-   * the parsed JSON body. Mirrors the original `graphUpload` helper.
+   * the parsed JSON body.
    */
   async upload<T = any>(
     method: string,
