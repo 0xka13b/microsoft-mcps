@@ -16,7 +16,7 @@
     "new-app": "node scripts/new-app.mjs",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build && changeset publish"
+    "release": "turbo run build && pnpm -r publish --access public"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",

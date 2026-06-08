@@ -195,12 +195,12 @@ Scaffolds `apps/<name>/` from the standard template (package.json, tsconfig, tsu
 
 Each server is an independent, unscoped npm package (`ms-<service>-mcp`). The shared `packages/*` are `private` — `tsup` bundles them into each server's `dist/index.js` (`noExternal: [/^@microsoft-mcp\//]`), so only `@modelcontextprotocol/sdk`, `express`, and `zod` are installed at runtime.
 
-Versioning and publishing use [changesets](https://github.com/changesets/changesets):
+Versioning uses [changesets](https://github.com/changesets/changesets); publishing uses `pnpm -r publish`:
 
 ```bash
 pnpm changeset           # describe a change; pick affected servers + bump type
 pnpm version-packages    # apply pending changesets -> bump versions + changelogs
-pnpm release             # build all, then `changeset publish` to npm
+pnpm release             # build all, then `pnpm -r publish` to npm
 ```
 
-`pnpm release` runs `prepublishOnly` (a fresh `tsup` build) per package, so the published tarball always contains an up-to-date bundle. The packages are unscoped, so they publish public by default — just `npm login` with any account first.
+`pnpm -r publish` rewrites the internal `workspace:*` deps to real versions, runs `prepublishOnly` (a fresh `tsup` build) per package, and publishes only servers whose version isn't already on npm. The packages are unscoped, so they publish public by default — just `npm login` with any account first.
