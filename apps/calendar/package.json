@@ -1,28 +1,57 @@
 {
   "name": "@microsoft-mcp/calendar",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
   "description": "Microsoft Calendar (Outlook Calendar) MCP server.",
+  "license": "MIT",
+  "author": "0xka13b",
+  "homepage": "https://github.com/0xka13b/microsoft-mcps/tree/main/apps/calendar#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xka13b/microsoft-mcps.git",
+    "directory": "apps/calendar"
+  },
+  "bugs": {
+    "url": "https://github.com/0xka13b/microsoft-mcps/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "microsoft",
+    "microsoft-365",
+    "microsoft-graph",
+    "calendar",
+    "outlook-calendar"
+  ],
   "bin": {
     "microsoft-calendar-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "build": "tsup",
     "check-types": "tsc --noEmit",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rm -rf dist .turbo",
+    "prepublishOnly": "tsup"
   },
   "dependencies": {
-    "@microsoft-mcp/core": "workspace:*",
-    "@microsoft-mcp/graph": "workspace:*",
-    "@microsoft-mcp/validation": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "express": "^5.2.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@microsoft-mcp/core": "workspace:*",
+    "@microsoft-mcp/graph": "workspace:*",
+    "@microsoft-mcp/validation": "workspace:*",
     "@types/node": "^22.10.0",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",

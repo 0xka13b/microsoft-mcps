@@ -87,22 +87,40 @@ These servers do **not** run an OAuth flow; supply a pre-acquired Microsoft Grap
 - **stdio:** set `MICROSOFT_ACCESS_TOKEN` in the environment.
 - **HTTP:** send `Authorization: Bearer <token>` on each `POST /mcp` request. Each request is handled statelessly with its own token, so multiple callers never share credentials.
 
+For local testing you can mint a short-lived token with the Azure CLI:
+
+```bash
+az account get-access-token --resource https://graph.microsoft.com --query accessToken -o tsv
+```
+
 Copy `.env.example` to `.env` and fill in the values for local development.
 
 ## Running
 
 ### stdio (e.g. Claude Desktop)
 
+Each server is published to npm and runnable with `npx` — no clone or build:
+
 ```jsonc
 // claude_desktop_config.json
 {
   "mcpServers": {
     "microsoft-calendar": {
-      "command": "node",
-      "args": ["/abs/path/microsoft-mcp/apps/calendar/dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "@microsoft-mcp/calendar"],
       "env": { "MICROSOFT_ACCESS_TOKEN": "<token>" }
     }
   }
+}
+```
+
+Or point at a local build instead of npm:
+
+```jsonc
+{
+  "command": "node",
+  "args": ["/abs/path/microsoft-mcp/apps/calendar/dist/index.js"],
+  "env": { "MICROSOFT_ACCESS_TOKEN": "<token>" }
 }
 ```
 
@@ -144,4 +162,18 @@ HTTP port: `--port <n>` → `PORT` → `3000`.
 pnpm new-app <name>
 ```
 
-Scaffolds `apps/<name>/` from the standard template (package.json, tsconfig, tsup config, and a starter `src/tools.ts` + `src/index.ts`). Then add your tools and run `pnpm install`.
+Scaffolds `apps/<name>/` from the standard template (package.json, tsconfig, tsup config, and a starter `src/tools.ts` + `src/index.ts`). Then add your tools and run `pnpm install`. The template is already publish-ready.
+
+## Releasing
+
+Each server is an independent npm package. The shared `packages/*` are `private` — `tsup` bundles them into each server's `dist/index.js` (`noExternal: [/^@microsoft-mcp\//]`), so only `@modelcontextprotocol/sdk`, `express`, and `zod` are installed at runtime.
+
+Versioning and publishing use [changesets](https://github.com/changesets/changesets):
+
+```bash
+pnpm changeset           # describe a change; pick affected servers + bump type
+pnpm version-packages    # apply pending changesets -> bump versions + changelogs
+pnpm release             # build all, then `changeset publish` to npm
+```
+
+`pnpm release` runs `prepublishOnly` (a fresh `tsup` build) per package, so the published tarball always contains an up-to-date bundle. Packages publish with `--access public`. Publishing requires `npm login` (an npm account with access to the `@microsoft-mcp` scope).
