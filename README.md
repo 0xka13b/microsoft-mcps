@@ -31,7 +31,7 @@ Each server speaks the real MCP protocol and runs over **either transport**:
 | <img src=".github/assets/icons/calendar.svg" width="22" alt=""/>   | Calendar    | `ms-calendar-mcp`         |     9 |
 | <img src=".github/assets/icons/contacts.svg" width="22" alt=""/>   | Contacts    | `ms-contacts-mcp`         |     7 |
 | <img src=".github/assets/icons/onedrive.svg" width="22" alt=""/>   | OneDrive    | `ms-onedrive-mcp`         |     9 |
-| <img src=".github/assets/icons/outlook.svg" width="22" alt=""/>    | Outlook     | `ms-outlook-mcp`          |    14 |
+| <img src=".github/assets/icons/outlook.svg" width="22" alt=""/>    | Outlook     | `microsoft-outlook-mcp`   |    14 |
 | <img src=".github/assets/icons/sharepoint.svg" width="22" alt=""/> | SharePoint  | `ms-sharepoint-mcp`       |    23 |
 
 All tools are thin wrappers over the [Microsoft Graph](https://learn.microsoft.com/graph/) `v1.0` API.

@@ -1,4 +1,4 @@
-# ms-outlook-mcp
+# microsoft-outlook-mcp
 
 Microsoft Outlook mail [Model Context Protocol](https://modelcontextprotocol.io) server — 14 tools over the [Microsoft Graph](https://learn.microsoft.com/graph/) `v1.0` API. Runs over **stdio** (local) or **Streamable HTTP** (remote).
 
@@ -13,7 +13,7 @@ Add to your MCP client config (e.g. Claude Desktop `claude_desktop_config.json`)
   "mcpServers": {
     "microsoft-outlook": {
       "command": "npx",
-      "args": ["-y", "ms-outlook-mcp"],
+      "args": ["-y", "microsoft-outlook-mcp"],
       "env": { "MICROSOFT_ACCESS_TOKEN": "<microsoft-graph-token>" }
     }
   }
@@ -29,7 +29,7 @@ az account get-access-token --resource https://graph.microsoft.com --query acces
 ## Remote (Streamable HTTP)
 
 ```bash
-npx -y ms-outlook-mcp --http --port 3000
+npx -y microsoft-outlook-mcp --http --port 3000
 ```
 
 Point a Streamable-HTTP MCP client at `http://localhost:3000/mcp` and send the token per request as `Authorization: Bearer <token>`.
