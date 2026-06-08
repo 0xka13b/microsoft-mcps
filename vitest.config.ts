@@ -13,7 +13,12 @@ export default defineConfig({
       // per-app invariant suites (apps/*/src/tools.test.ts) rather than measured
       // for line coverage.
       include: ["packages/*/src/**/*.ts"],
-      exclude: ["**/*.test.ts", "**/dist/**"],
+      exclude: [
+        "**/*.test.ts",
+        "**/dist/**",
+        // MSAL/browser/loopback sign-in — network + OS interaction, not unit-testable.
+        "packages/auth/src/msal.ts",
+      ],
       // Fail CI if coverage of the shared library code regresses below this.
       thresholds: {
         lines: 85,

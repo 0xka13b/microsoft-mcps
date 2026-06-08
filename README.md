@@ -109,24 +109,50 @@ Every push and pull request to `master` runs [CI](.github/workflows/ci.yml): typ
 
 ## Authentication
 
-These servers do **not** run an OAuth flow; supply a pre-acquired Microsoft Graph access token.
+You sign in **once** with your Microsoft account; the server then caches a refresh token and acquires access tokens silently from then on — no pasting, no 1-hour expiry. Sign-in uses your own [Microsoft Entra ID](https://learn.microsoft.com/entra/identity-platform/quickstart-register-app) app registration (free) so the servers act on your behalf.
 
-- **stdio:** set `MICROSOFT_ACCESS_TOKEN` in the environment.
-- **HTTP:** send `Authorization: Bearer <token>` on each `POST /mcp` request. Each request is handled statelessly with its own token, so multiple callers never share credentials.
+### 1. Register an Entra ID app (one time)
 
-For local testing you can mint a short-lived token with the Azure CLI:
+1. [Azure Portal](https://portal.azure.com) → **Microsoft Entra ID** → **App registrations** → **New registration**. Name it anything; pick the **Supported account types** that fit (single-tenant, multi-tenant, and/or personal accounts).
+2. **Authentication** → **Add a platform** → **Mobile and desktop applications** → add redirect URI **`http://localhost`**, and set **Allow public client flows** to **Yes** (enables the `--device-code` fallback).
+3. **API permissions** → **Add a permission** → **Microsoft Graph** → **Delegated permissions** → add the scopes for the servers you use (then **Grant admin consent** if your tenant requires it):
+
+   | Server | Delegated scopes |
+   | --- | --- |
+   | Calendar | `Calendars.ReadWrite` |
+   | Contacts | `Contacts.ReadWrite` |
+   | OneDrive | `Files.ReadWrite.All` |
+   | Outlook | `Mail.ReadWrite`, `Mail.Send` |
+   | SharePoint | `Sites.ReadWrite.All` |
+
+   All servers also use `User.Read`. (`offline_access` is requested automatically for refresh.)
+4. Copy the **Application (client) ID**.
+
+### 2. Sign in (one time per machine)
+
+Set `MICROSOFT_CLIENT_ID`, then run the server's **`login`** command. A browser opens; after you consent, the token is cached under `~/.config/microsoft-mcp/`:
 
 ```bash
-az account get-access-token --resource https://graph.microsoft.com --query accessToken -o tsv
+export MICROSOFT_CLIENT_ID=<your-client-id>
+
+npx -y ms-calendar-mcp login           # opens the browser
+npx -y ms-calendar-mcp login --device-code   # headless: shows a code to enter
 ```
 
-Copy `.env.example` to `.env` and fill in the values for local development.
+From then on the server refreshes tokens automatically. Use a non-default tenant with `MICROSOFT_TENANT_ID` (default `common`).
+
+### Advanced: supply your own token
+
+To bypass the built-in flow, supply a pre-acquired Graph token directly:
+
+- **stdio:** set `MICROSOFT_ACCESS_TOKEN` (takes precedence over the cached sign-in). Good for quick tests — mint one with `az account get-access-token --resource https://graph.microsoft.com --query accessToken -o tsv`.
+- **HTTP:** send `Authorization: Bearer <token>` on each `POST /mcp` request. Each request is stateless with its own token, so callers never share credentials — this is the model for hosted/remote deployments, which handle their own auth.
 
 ## Running
 
 ### stdio (e.g. Claude Desktop)
 
-Each server is published to npm and runnable with `npx` — no clone or build:
+Each server is published to npm and runnable with `npx` — no clone or build. Sign in once first (`npx -y ms-calendar-mcp login`, see [Authentication](#authentication)), then:
 
 ```jsonc
 // claude_desktop_config.json
@@ -135,7 +161,7 @@ Each server is published to npm and runnable with `npx` — no clone or build:
     "microsoft-calendar": {
       "command": "npx",
       "args": ["-y", "ms-calendar-mcp"],
-      "env": { "MICROSOFT_ACCESS_TOKEN": "<token>" }
+      "env": { "MICROSOFT_CLIENT_ID": "<your-client-id>" }
     }
   }
 }
@@ -147,7 +173,7 @@ Or point at a local build instead of npm:
 {
   "command": "node",
   "args": ["/abs/path/microsoft-mcp/apps/calendar/dist/index.js"],
-  "env": { "MICROSOFT_ACCESS_TOKEN": "<token>" }
+  "env": { "MICROSOFT_CLIENT_ID": "<your-client-id>" }
 }
 ```
 
@@ -175,10 +201,13 @@ HTTP port: `--port <n>` → `PORT` → `3000`.
 
 ## Environment variables
 
-| Variable                  | Used by | Description                                                        |
-| ------------------------- | ------- | ------------------------------------------------------------------ |
-| `MICROSOFT_ACCESS_TOKEN`  | stdio   | Microsoft Graph access token.                                      |
-| `MCP_TRANSPORT`           | both    | `stdio` (default) or `http`.                                       |
-| `PORT`                    | http    | Listen port (default `3000`).                                      |
-| `MCP_HTTP_BODY_LIMIT`     | http    | Max request body size (default `50mb`) for base64 uploads.         |
-| `MCP_DEBUG`               | both    | Any non-empty value enables debug logs (to stderr).                |
+| Variable                  | Used by | Description                                                          |
+| ------------------------- | ------- | ------------------------------------------------------------------- |
+| `MICROSOFT_CLIENT_ID`     | stdio   | Entra ID app (client) ID for sign-in. Required for the `login` flow. |
+| `MICROSOFT_TENANT_ID`     | stdio   | Tenant for sign-in: `common` (default), `organizations`, `consumers`, or a tenant ID. |
+| `MICROSOFT_ACCESS_TOKEN`  | stdio   | Pre-acquired Graph token; overrides the cached sign-in when set.    |
+| `MICROSOFT_MCP_CACHE_DIR` | stdio   | Override the token-cache directory (default `~/.config/microsoft-mcp`). |
+| `MCP_TRANSPORT`           | both    | `stdio` (default) or `http`.                                        |
+| `PORT`                    | http    | Listen port (default `3000`).                                       |
+| `MCP_HTTP_BODY_LIMIT`     | http    | Max request body size (default `50mb`) for base64 uploads.          |
+| `MCP_DEBUG`               | both    | Any non-empty value enables debug logs (to stderr).                 |

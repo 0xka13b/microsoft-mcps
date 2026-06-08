@@ -1,4 +1,5 @@
 import { log } from "@microsoft-mcp/logger";
+import { login, resolveAuthConfig } from "@microsoft-mcp/auth";
 import { runHttp, runStdio } from "./transport.js";
 import type { AnyTool, ServerMeta } from "./types.js";
 
@@ -31,12 +32,41 @@ export const resolvePort = (argv: string[]): number => {
   return 3000;
 };
 
+/* v8 ignore start -- interactive sign-in (browser / device code), not unit-testable */
 /**
- * Entry point for every Microsoft MCP server. Wires the tool collection to the
- * selected transport and keeps the process alive.
+ * Runs the one-time interactive sign-in: opens the browser (or device-code flow
+ * with `--device-code`) and caches the token so the server can run silently.
+ */
+async function runLogin(meta: ServerMeta, argv: string[]): Promise<void> {
+  try {
+    const config = resolveAuthConfig();
+    const scopes = meta.scopes ?? [];
+    console.log(`Signing in to Microsoft for ${meta.title ?? meta.name}...`);
+    if (scopes.length) console.log(`Requesting scopes: ${scopes.join(", ")}`);
+    await login(config, scopes, argv.includes("--device-code"));
+    console.log(
+      "\n✓ Signed in. Your token is cached and refreshed automatically — " +
+        "start the server normally (no MICROSOFT_ACCESS_TOKEN needed).",
+    );
+  } catch (err: any) {
+    console.error(`\nSign-in failed: ${err?.message ?? err}`);
+    process.exitCode = 1;
+  }
+}
+/* v8 ignore stop */
+
+/**
+ * Entry point for every Microsoft MCP server. Handles the `login` subcommand,
+ * otherwise wires the tool collection to the selected transport.
  */
 export async function run(meta: ServerMeta, tools: AnyTool[]): Promise<void> {
   const argv = process.argv.slice(2);
+
+  if (argv[0] === "login") {
+    await runLogin(meta, argv);
+    return;
+  }
+
   const mode = resolveMode(argv);
 
   try {

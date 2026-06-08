@@ -9,6 +9,12 @@ export interface ServerMeta {
   version: string;
   /** Optional human-friendly display name. */
   title?: string;
+  /**
+   * Microsoft Graph delegated scopes this server needs (e.g.
+   * `["User.Read", "Calendars.ReadWrite"]`). Used by the `login` flow and by
+   * silent token acquisition over stdio.
+   */
+  scopes?: string[];
 }
 
 /** Per-invocation context handed to every tool handler. */

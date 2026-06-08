@@ -5,7 +5,7 @@ import { log } from "@microsoft-mcp/logger";
 import type { AnyTool, ServerMeta, ToolContext } from "./types.js";
 
 /** Supplies the Microsoft Graph access token for a request, or throws if absent. */
-export type TokenProvider = () => string;
+export type TokenProvider = () => string | Promise<string>;
 
 const jsonResult = (value: unknown): CallToolResult => ({
   content: [{ type: "text", text: JSON.stringify(value ?? null, null, 2) }],
@@ -76,7 +76,7 @@ export function createServer(meta: ServerMeta, tools: AnyTool[], getToken: Token
 
         let token: string;
         try {
-          token = getToken();
+          token = await getToken();
         } catch (err: any) {
           log.warn("tool auth missing", { tool: tool.name, message: err?.message });
           return errorResult(err?.message ?? "Authentication required", err?.status ?? 401);

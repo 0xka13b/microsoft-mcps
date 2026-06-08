@@ -59,6 +59,7 @@ const packageJson = {
   },
   // @microsoft-mcp/* are bundled into dist by tsup, so they are build-time only.
   dependencies: {
+    "@azure/msal-node": "^5.2.3",
     "@modelcontextprotocol/sdk": "^1.29.0",
     express: "^5.2.1",
     zod: "^4.4.3",
@@ -110,7 +111,8 @@ export const tools = [
 const indexTs = `import { run } from "@microsoft-mcp/core";
 import { tools } from "./tools.js";
 
-void run({ name: "${serverName}", version: "1.0.0", title: "Microsoft ${title}" }, tools);
+// scopes: the Microsoft Graph delegated permissions this server needs.
+void run({ name: "${serverName}", version: "1.0.0", title: "Microsoft ${title}", scopes: ["User.Read"] }, tools);
 `;
 
 writeFileSync(path.join(appDir, "package.json"), JSON.stringify(packageJson, null, 2) + "\n");

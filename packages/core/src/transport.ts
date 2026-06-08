@@ -3,6 +3,7 @@ import express from "express";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { log } from "@microsoft-mcp/logger";
+import { acquireTokenSilent, resolveAuthConfig } from "@microsoft-mcp/auth";
 import { createServer, type TokenProvider } from "./register.js";
 import type { AnyTool, ServerMeta } from "./types.js";
 
@@ -27,10 +28,18 @@ export const extractBearer = (authHeader: string | undefined): string | undefine
   return token || undefined;
 };
 
-/** Runs the server over stdio. Token is read once from the environment. */
+/**
+ * Runs the server over stdio. Each tool call resolves a token: the
+ * `MICROSOFT_ACCESS_TOKEN` env var wins (advanced/testing); otherwise an access
+ * token is acquired silently from the cached MSAL sign-in (run the `login`
+ * command once). The provider is per-call so refreshes happen transparently.
+ */
 export async function runStdio(meta: ServerMeta, tools: AnyTool[]): Promise<void> {
-  const envToken = process.env[TOKEN_ENV];
-  const getToken: TokenProvider = () => requireToken(envToken);
+  const getToken: TokenProvider = async () => {
+    const envToken = process.env[TOKEN_ENV];
+    if (envToken) return envToken;
+    return acquireTokenSilent(resolveAuthConfig(), meta.scopes ?? []);
+  };
 
   const server = createServer(meta, tools, getToken);
   await server.connect(new StdioServerTransport());

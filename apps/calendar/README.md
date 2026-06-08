@@ -4,9 +4,19 @@ Microsoft Calendar (Outlook Calendar) [Model Context Protocol](https://modelcont
 
 Part of [microsoft-mcps](https://github.com/0xka13b/microsoft-mcps).
 
-## Install (stdio)
+## Setup
 
-Add to your MCP client config (e.g. Claude Desktop `claude_desktop_config.json`):
+Sign in once with your own free Microsoft [Entra ID](https://learn.microsoft.com/entra/identity-platform/quickstart-register-app) app. Register an app as a **public client** (redirect URI `http://localhost`, "Allow public client flows" = Yes) and grant these **delegated** Microsoft Graph permissions: `User.Read`, `Calendars.ReadWrite`. Then:
+
+```bash
+export MICROSOFT_CLIENT_ID=<your-client-id>
+npx -y ms-calendar-mcp login              # opens the browser
+# npx -y ms-calendar-mcp login --device-code   # headless alternative
+```
+
+The refresh token is cached under `~/.config/microsoft-mcp/` and renewed automatically — no token pasting, no 1-hour expiry.
+
+## Use over stdio (e.g. Claude Desktop)
 
 ```jsonc
 {
@@ -14,17 +24,13 @@ Add to your MCP client config (e.g. Claude Desktop `claude_desktop_config.json`)
     "microsoft-calendar": {
       "command": "npx",
       "args": ["-y", "ms-calendar-mcp"],
-      "env": { "MICROSOFT_ACCESS_TOKEN": "<microsoft-graph-token>" }
+      "env": { "MICROSOFT_CLIENT_ID": "<your-client-id>" }
     }
   }
 }
 ```
 
-These servers do **not** run an OAuth flow — supply a pre-acquired Microsoft Graph access token. For local testing you can mint one with the Azure CLI:
-
-```bash
-az account get-access-token --resource https://graph.microsoft.com --query accessToken -o tsv
-```
+Advanced: set `MICROSOFT_ACCESS_TOKEN` to supply a pre-acquired Graph token instead of signing in.
 
 ## Remote (Streamable HTTP)
 
@@ -34,7 +40,7 @@ npx -y ms-calendar-mcp --http --port 3000
 
 Point a Streamable-HTTP MCP client at `http://localhost:3000/mcp` and send the token per request as `Authorization: Bearer <token>`.
 
-See the [main repo](https://github.com/0xka13b/microsoft-mcps#readme) for transport selection, environment variables, and the full tool list.
+See the [main repo](https://github.com/0xka13b/microsoft-mcps#readme) for the full Entra app walkthrough, environment variables, and the tool list.
 
 ## License
 
