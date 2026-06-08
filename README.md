@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/icons/outlook.svg" width="54" alt="Outlook" />&nbsp;&nbsp;<img src=".github/assets/icons/calendar.svg" width="54" alt="Calendar" />&nbsp;&nbsp;<img src=".github/assets/icons/onedrive.svg" width="54" alt="OneDrive" />&nbsp;&nbsp;<img src=".github/assets/icons/sharepoint.svg" width="54" alt="SharePoint" />&nbsp;&nbsp;<img src=".github/assets/icons/contacts.svg" width="54" alt="Contacts" />
+<img src=".github/assets/icons/outlook.png" width="54" alt="Outlook" />&nbsp;&nbsp;<img src=".github/assets/icons/calendar.png" width="54" alt="Calendar" />&nbsp;&nbsp;<img src=".github/assets/icons/onedrive.png" width="54" alt="OneDrive" />&nbsp;&nbsp;<img src=".github/assets/icons/sharepoint.png" width="54" alt="SharePoint" />&nbsp;&nbsp;<img src=".github/assets/icons/contacts.png" width="54" alt="Contacts" />
 
 <h1>Microsoft MCP</h1>
 
@@ -28,11 +28,11 @@ Each server speaks the real MCP protocol and runs over **either transport**:
 
 | | Server      | npm package (and binary)  | Tools |
 | :-: | ----------- | ------------------------- | ----: |
-| <img src=".github/assets/icons/calendar.svg" width="22" alt=""/>   | Calendar    | `ms-calendar-mcp`         |     9 |
-| <img src=".github/assets/icons/contacts.svg" width="22" alt=""/>   | Contacts    | `ms-contacts-mcp`         |     7 |
-| <img src=".github/assets/icons/onedrive.svg" width="22" alt=""/>   | OneDrive    | `ms-onedrive-mcp`         |     9 |
-| <img src=".github/assets/icons/outlook.svg" width="22" alt=""/>    | Outlook     | `microsoft-outlook-mcp`   |    14 |
-| <img src=".github/assets/icons/sharepoint.svg" width="22" alt=""/> | SharePoint  | `ms-sharepoint-mcp`       |    23 |
+| <img src=".github/assets/icons/calendar.png" width="22" alt=""/>   | Calendar    | `ms-calendar-mcp`         |     9 |
+| <img src=".github/assets/icons/contacts.png" width="22" alt=""/>   | Contacts    | `ms-contacts-mcp`         |     7 |
+| <img src=".github/assets/icons/onedrive.png" width="22" alt=""/>   | OneDrive    | `ms-onedrive-mcp`         |     9 |
+| <img src=".github/assets/icons/outlook.png" width="22" alt=""/>    | Outlook     | `microsoft-outlook-mcp`   |    14 |
+| <img src=".github/assets/icons/sharepoint.png" width="22" alt=""/> | SharePoint  | `ms-sharepoint-mcp`       |    23 |
 
 All tools are thin wrappers over the [Microsoft Graph](https://learn.microsoft.com/graph/) `v1.0` API.
 
